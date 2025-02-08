@@ -1,11 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import cn from "classnames";
 import { AppContext } from "../appContext";
 import { useNavigate } from "react-router-dom";
-import "./Auth.scss";
 import { Loader } from "../Loader";
 import { loginUser, registerUser } from "../../testingAuthAPI";
-// import { AuthResponse } from "../../Types/types";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,11 +62,14 @@ type FormDataLogin = z.infer<typeof loginSchema>;
 type FormDataRegister = z.infer<typeof registerSchema>;
 
 export const Auth: React.FC = () => {
-  const { setIsAuthenticated } = useContext(AppContext);
-
   const [isRegistered, setIsRegistered] = useState(false);
   const [logOpen, setLogOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
+  const { setIsAuthenticated } = useContext(AppContext);
   const {
     control,
     handleSubmit,
@@ -79,10 +79,6 @@ export const Auth: React.FC = () => {
     resolver: zodResolver(isRegistered ? loginSchema : registerSchema),
     defaultValues: { name: "", username: "", password: "" },
   });
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     reset({ name: "", username: "", password: "" });
@@ -95,15 +91,14 @@ export const Auth: React.FC = () => {
     try {
       let response;
       if (isRegistered) {
-        // Handle login logic
         response = await loginUser(data);
-        console.log("Login successful, token:", response.token);
+        console.log("Login successful, token:", response.accessToken);
       } else {
-        // Handle registration logic
         response = await registerUser(data);
-        // console.log("Registration successful, token:", response.token);
       }
-      localStorage.setItem("authToken", response.token); // Mock token for testing
+
+      localStorage.setItem("authToken", response.accessToken);
+      console.log("Response from login or register:", response);
       setIsAuthenticated(true);
       navigate("/");
     } catch (err: unknown) {
@@ -116,131 +111,159 @@ export const Auth: React.FC = () => {
   };
 
   const handleReset = () => {
+    setError("");
     reset();
   };
 
   return (
     <>
-      <div className="auth__top">
-        <h1>Welcome to the login page</h1>
-        <div className="auth__button-wrapper">
-          <button
-            className="auth__button auth__button--choise"
-            onClick={() => {
-              setIsRegistered(true);
-              setLogOpen(true);
-            }}
-          >
-            "Already have an account? Log In"
-          </button>
-          <button
-            className="auth__button auth__button--choise"
-            onClick={() => {
-              setIsRegistered(false);
-              setLogOpen(true);
-            }}
-          >
-            "Dont't have an account? Register"
-          </button>
+      {!logOpen ? (
+        <div className="h-screen bg-white-400 flex flex-col justify-center items-center">
+          <h1 className="text-2xl font-bold">Welcome to our website!</h1>
+          <div className="flex gap-4 mt-5">
+            <button
+              className="px-6 py-3 bg-transparent text-black border border-black rounded-md hover:bg-black hover:text-white transition cursor-pointer"
+              onClick={() => {
+                setIsRegistered(true);
+                setLogOpen(true);
+              }}
+            >
+              Already have an account? Log In
+            </button>
+            <button
+              className="px-6 py-3 bg-transparent text-black border border-black rounded-md hover:bg-black hover:text-white transition cursor-pointer"
+              onClick={() => {
+                setIsRegistered(false);
+                setLogOpen(true);
+              }}
+            >
+              Dont't have an account? Register
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="fixed inset-0 flex justify-center items-center">
+          <div className="relative">
+            <button 
+              className="absolute -top-15 text-gray-500 cursor-pointer border border-gray-500 rounded-lg p-1 hover:bg-gray-100 transition"
+              onClick={() => setLogOpen(false)}
+            >
+              go back
+            </button>
 
-      <div
-        className={cn("auth", {
-          "auth--visible": logOpen,
-          "auth--hidden": !logOpen,
-        })}
-      >
-        <div className="auth__content">
-          <form onSubmit={handleSubmit(onSubmit)} className="auth__form">
-            <fieldset className="auth__fieldset">
-              <h3 className="auth__title">
-                {isRegistered ? "Log In" : "Register"}
-              </h3>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4 w-full md:w-[50vw] lg:w-[30vw] m-6 md:m-0 shadow-lg rounded-lg p-3"
+            >
+              <fieldset className="">
+                <h3 className="text-xl font-semibold text-center">
+                  {isRegistered ? "Log In" : "Register"}
+                </h3>
 
-              <div className="auth__input-container">
-                <label htmlFor="name">Name</label>
+                <div>
+                  <label className="block font-medium" htmlFor="name">
+                    Name
+                  </label>
 
-                <Controller
-                  control={control}
-                  name="name"
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      id="name"
-                      type="text"
-                      className="auth__input auth__input--name"
-                      placeholder="name"
-                    />
+                  <Controller
+                    control={control}
+                    name="name"
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        id="name"
+                        type="text"
+                        className="w-full p-2 border-b border-gray-400 focus:outline-none"
+                        placeholder="Name"
+                      />
+                    )}
+                  />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm">
+                      {errors.name.message}
+                    </p>
                   )}
-                />
-                {errors.name && (
-                  <p style={{ color: "red" }}>{errors.name.message}</p>
-                )}
-              </div>
+                </div>
 
-              <div className="auth__input-container">
-                <label htmlFor="password">Password</label>
-                <Controller
-                  control={control}
-                  name="password"
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      id="password"
-                      type="password"
-                      className="auth__input auth__input--email"
-                      placeholder="password"
-                    />
+                <div>
+                  <label className="block font-medium" htmlFor="password">
+                    Password
+                  </label>
+                  <Controller
+                    control={control}
+                    name="password"
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        id="password"
+                        type="password"
+                        className="w-full p-2 border-b border-gray-400 focus:outline-none"
+                        placeholder="Password"
+                      />
+                    )}
+                  />
+                  {errors.password && (
+                    <p className="text-red-500 font-sm">
+                      {errors.password.message}
+                    </p>
                   )}
-                />
-                {errors.password && (
-                  <p style={{ color: "red" }}>{errors.password.message}</p>
-                )}
-              </div>
+                </div>
 
-              <div className="auth__input-container">
-                <label htmlFor="confirmPassword">Username</label>
-                <Controller
-                  control={control}
-                  name="username"
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      id="username"
-                      type="username"
-                      className="auth__input auth__input--email"
-                      placeholder="username"
-                    />
+                <div>
+                  <label className="block font-medium" htmlFor="username">
+                    Username
+                  </label>
+                  <Controller
+                    control={control}
+                    name="username"
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        id="username"
+                        type="username"
+                        className="w-full p-2 border-b border-gray-400 focus:outline-none"
+                        placeholder="Username"
+                      />
+                    )}
+                  />
+                  {errors.username && (
+                    <p className="text-red-500 font-sm">
+                      {errors.username.message}
+                    </p>
                   )}
-                />
-                {errors.username && (
-                  <p style={{ color: "red" }}>{errors.username.message}</p>
-                )}
-              </div>
+                </div>
 
-              {error && <p style={{ color: "red" }}>{error}</p>}
+                {error && <p className="text-red-500 font-sm">{error}</p>}
 
-              <button
-                className="auth__button auth__button--submit"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? <Loader /> : isRegistered ? "Submit" : "Register"}
-              </button>
+                <div className="flex flex-row mt-4 space-x-6">
+                  <button
+                    className="flex-grow h-10 bg-black text-white p-2 hover:text-black hover:bg-yellow-500 transition cursor-pointer flex justify-center items-center"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Loader />
+                    ) : isRegistered ? (
+                      "Submit"
+                    ) : (
+                      "Register"
+                    )}
+                  </button>
 
-              <button
-                className=""
-                type="reset"
-                disabled={loading}
-                onClick={handleReset}
-              >
-                Reset
-              </button>
-            </fieldset>
-          </form>
+                  <button
+                    className="flex-grow h-10 p-2 border border-gray-500 rounded-md hover:bg-gray-100 transition cursor-pointer"
+                    type="reset"
+                    disabled={loading}
+                    onClick={handleReset}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

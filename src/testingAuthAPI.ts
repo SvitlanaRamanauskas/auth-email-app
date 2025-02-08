@@ -8,12 +8,10 @@ export const registerUser = async (userData: { username: string, name: string, p
       body: JSON.stringify(userData),
     });
     if (response.ok) {
-      // If status is 201 and no content in the response body, return a success message or empty object
       if (response.status === 201) {
         return { message: "User registered successfully" };
       }
     } else {
-      // Handle error case by attempting to parse the error message in JSON
       const errorData = await response.json();
       throw new Error(errorData.message || "Registration failed");
     }
@@ -42,7 +40,7 @@ export const loginUser = async (credentials: { username: string, name: string, p
       throw new Error(data.message || "Login failed");
     }
 
-    return data; // Successfully logged in, should return token
+    return data;
   } catch (error) {
     console.error("Login error:", error);
     throw error;
@@ -52,5 +50,5 @@ export const loginUser = async (credentials: { username: string, name: string, p
 
 export const testAuthApi = (): boolean => {
   const token = localStorage.getItem('authToken');
-  return !!token; // If token exists, consider the user authenticated
+  return !!token;
 };
