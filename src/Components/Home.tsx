@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../appContext";
+import { AppContext } from "./appContext";
 import { useContext, useEffect } from "react";
-import "./Home.scss";
 
 export const Home: React.FC = () => {
   const { setIsAuthenticated, userName, setUserName} = useContext(AppContext);
@@ -41,11 +40,11 @@ export const Home: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <h1>{`Hello, ${userName}`}</h1>
-      <button onClick={handleLogout} className="home__button">
+    <div className="h-screen flex flex-col flex justify-center items-center space-y-4">
+      <h1 className="text-2xl">{`Hello, ${userName}`}</h1>
+      <button onClick={handleLogout} className="font-sans px-6 py-3 bg-transparent text-black border border-black rounded-md hover:bg-black hover:text-white transition cursor-pointer">
         Log out
       </button>
-    </>
+    </div>
   );
 };

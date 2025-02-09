@@ -1,4 +1,4 @@
-import { Home } from "../Components/Home/Home";
+import { Home } from "../Components/Home";
 
 export const HomePage = () => {
   return (

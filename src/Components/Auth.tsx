@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../appContext";
 import { useNavigate } from "react-router-dom";
-import { Loader } from "../Loader";
-import { loginUser, registerUser } from "../../testingAuthAPI";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "./Loader";
+import { AppContext } from "./appContext";
+import { loginUser, registerUser } from "../testingAuthAPI";
 
 const loginSchema = z.object({
   username: z
