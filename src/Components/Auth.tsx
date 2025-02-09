@@ -90,15 +90,14 @@ export const Auth: React.FC = () => {
 
     try {
       let response;
-      if (isRegistered) {
-        response = await loginUser(data);
-        console.log("Login successful, token:", response.accessToken);
-      } else {
+      if (!isRegistered) {
         response = await registerUser(data);
+        response = await loginUser(data);
+      } else {
+        response = await loginUser(data);
       }
 
       localStorage.setItem("authToken", response.accessToken);
-      console.log("Response from login or register:", response);
       setIsAuthenticated(true);
       navigate("/");
     } catch (err: unknown) {
@@ -146,7 +145,10 @@ export const Auth: React.FC = () => {
           <div className="relative">
             <button 
               className="absolute -top-15 text-gray-500 cursor-pointer border border-gray-500 rounded-lg p-1 hover:bg-gray-100 transition"
-              onClick={() => setLogOpen(false)}
+              onClick={() => {
+                setLogOpen(false)
+                reset()
+              }}
             >
               go back
             </button>
