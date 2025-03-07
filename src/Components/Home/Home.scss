@@ -1,0 +1,61 @@
+@use "../../style-utills/variables.scss" as *;
+@use "../../style-utills/mixins.scss" as *;
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 20px;
+
+  @include on-tablet {
+    padding: 40px;
+  }
+
+  @include on-desktop {
+    padding: 0;
+    margin: 0 auto;
+    max-width: 1024px;
+  }
+
+  &__section {
+
+    &--top {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+  &__name {
+
+  }
+
+  &__button {
+    &-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    font-family: sans-serif;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: black;
+    border: 1px solid black;
+    border-radius: 4px; 
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+      background-color: black;
+      color: white;
+    }
+
+    &--logout {
+
+    }
+  }
+
+}
+
+.emails {
+
+}

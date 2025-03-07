@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from "react";
+import { CurrentUser } from "../types/CurrentUser";
 
 export type ContextType = {
   isAuthenticated: boolean,
   setIsAuthenticated: (value: boolean) => void,
-  userName: string,
-  setUserName: (value: string) => void,
+  currentUser: CurrentUser | null,
+  setCurrentUser: (value: CurrentUser | null) => void,
 }
 
 type Props = {
@@ -14,21 +15,21 @@ type Props = {
 export const AppContext = React.createContext<ContextType>({
   isAuthenticated: false,
   setIsAuthenticated: () => {},
-  userName: "",
-  setUserName: () => {},
+  currentUser: null,
+  setCurrentUser: () => {},
 });
 
 export const AppProvider: React.FC<Props> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated ] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
   const values = useMemo(() => ({
     isAuthenticated,
     setIsAuthenticated,
-    userName,
-    setUserName,
+    currentUser,
+    setCurrentUser
   }), [
-    isAuthenticated, setIsAuthenticated, userName, setUserName
+    isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser
   ])
   return (
     <AppContext.Provider value={values}>{children}</AppContext.Provider>

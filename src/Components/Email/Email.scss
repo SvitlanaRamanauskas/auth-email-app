@@ -1,0 +1,22 @@
+@use "../../style-utills/variables.scss" as *;
+@use "../../style-utills/mixins.scss" as *;
+
+.email {
+
+  @include on-tablet {
+    width: 60%;
+  }
+  
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__input {
+    outline: none;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 7px;
+  }
+}

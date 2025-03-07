@@ -1,4 +1,4 @@
-* [DEMO](https://svitlanaramanauskas.github.io/Auth-app)
+* [DEMO](https://svitlanaramanauskas.github.io/auth-email-app)
 
 # Running the Project Locally
 
@@ -7,8 +7,8 @@ To run this project locally, follow these steps:
 - Clone the Repository:
 
 ```
-git clone https://github.com/SvitlanaRamanauskas/Auth-app.git
-cd Auth-app
+git clone https://github.com/SvitlanaRamanauskas/auth-email-app.git
+cd auth-email-app
 ```
 
 - Install Dependencies:

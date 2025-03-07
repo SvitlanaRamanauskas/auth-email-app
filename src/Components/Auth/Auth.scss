@@ -1,0 +1,44 @@
+.auth {
+  height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__title {
+
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 21px;
+  }
+
+  &__button {
+    background-color: transparent;
+    color: black;
+    padding: 12px 24px;
+    border: 1px solid black;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+      background-color: black;
+      color: white;
+    }
+  }
+
+  &__form {
+    position: fixed; 
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
