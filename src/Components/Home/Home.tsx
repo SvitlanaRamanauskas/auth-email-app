@@ -22,13 +22,15 @@ export const Home: React.FC = () => {
   const [loadingEmails, setLoadingEmails] = useState(false);
   const [errorEmails, setErrorEmails] = useState<string | null>(null);
 
-  console.log(next);
+  console.log("in home comp")
 
   const { setIsAuthenticated, currentUser, setCurrentUser } =
     useContext(AppContext);
   const navigate = useNavigate();
   const localUsername = localStorage.getItem("username");
   const localPassword = localStorage.getItem("password");
+
+  console.log(localUsername, localPassword)
 
   const handleLogout = () => {
     localStorage.removeItem("username");
@@ -52,9 +54,14 @@ export const Home: React.FC = () => {
     setErrorLoadingCurrentUser(false);
 
     getCurrentUser(localUsername, localPassword)
-      .then((data) => setCurrentUser(data))
+      .then((data) => {
+        console.log(data)
+        setCurrentUser(data)
+      })
       .catch(() => setErrorLoadingCurrentUser(true))
       .finally(() => setLoadingCurrentUser(false));
+
+      console.log("currentuser",currentUser)
   }, []);
 
   const fetchEmails = async (userId: number, page: number) => {
@@ -98,7 +105,7 @@ export const Home: React.FC = () => {
       });
     }
   };
-
+  console.log("in home end")
   return (
     <div className="home">
       <section className="home__section home__section--top">
@@ -113,7 +120,7 @@ export const Home: React.FC = () => {
           >
             Log out
           </button>
-          
+
           <button
             onClick={toggleLetterOpen}
             className="home__button home__button--logout"
@@ -124,7 +131,7 @@ export const Home: React.FC = () => {
       </section>
 
       {errorLoadingCurrentUser && !loadingCurrentUser && (
-        <p>Error loading current user</p>
+        <p className="home__message">Error loading current user</p>
       )}
       {!errorLoadingCurrentUser && loadingCurrentUser && <Loader />}
 
@@ -133,24 +140,25 @@ export const Home: React.FC = () => {
 
         <article className="home__list">
           {!loadingEmails && !errorEmails && emailsFromServer.length > 0 && (
-            <EmailList emails={emailsFromServer} />
+            <>
+              <EmailList emails={emailsFromServer} />
+              <Pagination
+                onPreviousPage={handlePreviousPage}
+                onNextPage={handleNextPage}
+                previous={previous}
+                next={next}
+                count={count}
+                currentPage={currentPage}
+              />
+            </>
           )}
 
           {loadingEmails && !errorEmails && <Loader />}
-          {errorEmails && !loadingEmails && <p>Error getting emails</p>}
+          {!errorEmails && !loadingEmails && <p className="home__message">Error getting emails</p>}
 
-          {!loadingEmails && !errorEmails && emailsFromServer.length === 0 && (
-            <p>No emails yet</p>
+          {loadingEmails && !errorEmails && emailsFromServer.length === 0 && (
+            <p className="home__message">No emails yet</p>
           )}
-
-          <Pagination
-            onPreviousPage={handlePreviousPage}
-            onNextPage={handleNextPage}
-            previous={previous}
-            next={next}
-            count={count}
-            currentPage={currentPage}
-          />
         </article>
       </section>
     </div>

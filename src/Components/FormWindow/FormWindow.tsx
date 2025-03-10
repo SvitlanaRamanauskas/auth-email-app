@@ -3,7 +3,7 @@ import "./FormWindow.scss";
 import { z } from "zod";
 import { Loader } from "../Loader/Loader";
 import { Controller, useForm } from "react-hook-form";
-import { createUser } from "../../api";
+import { createUser, getCurrentUser } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../appContext";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +15,7 @@ const loginSchema = z.object({
     .max(150, "Username must be at most 150 characters.")
     .regex(
       /^[\w.@+-]+$/,
-      "Username can contain only letters, digits, and @/./+/-/_.",
+      "Username can contain only letters, digits, and @/./+/-/_."
     ),
 
   password: z
@@ -31,7 +31,7 @@ const registerSchema = z.object({
     .max(150, "Username must be at most 150 characters.")
     .regex(
       /^[\w.@+-]+$/,
-      "Username can contain only letters, digits, and @/./+/-/_.",
+      "Username can contain only letters, digits, and @/./+/-/_."
     ),
 
   email: z
@@ -53,7 +53,10 @@ type Props = {
   onLogOpen: (value: boolean) => void;
 };
 
-export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
+export const FormWindow: React.FC<Props> = ({
+  isRegistered,
+  onLogOpen,
+}) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -74,6 +77,10 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
   }, [reset]);
 
   const onSubmitRegistration = async (data: FormDataRegister) => {
+    localStorage.removeItem("username");
+    localStorage.removeItem("password");
+    localStorage.removeItem("email");
+    localStorage.removeItem("userId");
     setLoading(true);
     setError("");
 
@@ -85,24 +92,54 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
         localStorage.setItem("email", response.email);
         localStorage.setItem("userId", response.id.toString());
       }
-    } catch (err) {
-      if (err instanceof Error) setError(err.message);
+      window.alert("Please, now log in with your credentials");
+
+      onLogOpen(true);
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null && "data" in err) {
+        const errorData = err as { data: { username?: string[] } };
+
+        if (errorData.data.username) {
+          setError(errorData.data.username[0]);
+          return;
+        }
+      }
+
+      setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
   const onSubmitLogin = async (data: FormDataLogin) => {
+    localStorage.removeItem("email");
+    localStorage.removeItem("username");
+    localStorage.removeItem("password");
     setLoading(true);
     setError("");
 
     try {
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("password", data.password);
+      const response = await getCurrentUser(data.username, data.password);
 
-      setIsAuthenticated(true);
-      navigate("/");
-    } catch (err) {
-      if (err instanceof Error) setError(err.message);
+      if (response && response.success) {
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("password", data.password);
+
+        setIsAuthenticated(true);
+        
+        navigate("/");
+      }
+
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null && "status" in err) {
+        const error = err as { status: number; data?: { username?: string[] } };
+  
+        if (error.status === 401) {
+          setError("Unauthorized: No user with such credentials.");
+          return;
+        }
+      }
+      setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -171,7 +208,7 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
                   />
                 )}
               />
-              {errors.email && <p className="form__error">{errors.email.message}</p>}
+              {/* {errors.email && <p className="form__error">{errors.email.message}</p>} */}
             </div>
           )}
 

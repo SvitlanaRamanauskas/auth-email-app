@@ -1,4 +1,4 @@
-@import "./style-utills/variables";
+@use "./style-utills/variables" as *;
 
 @font-face {
   font-family: Inter;

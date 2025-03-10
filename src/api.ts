@@ -34,14 +34,16 @@ const apiRequest = async (
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  const responseData = await response.json();;
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.message || `Request failed with status ${response.status}`,
-    );
+    if(response.statusText === "Unauthorized") {
+      throw { status: response.status, data: responseData || {} };
+    }
+    throw { status: response.status, data: responseData || {} };
   }
 
-  return response.json();
+  return responseData;
 };
 
 export const createUser = async (userData: {
