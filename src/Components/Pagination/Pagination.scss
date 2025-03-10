@@ -1,0 +1,24 @@
+@use "../../style-utills/variables.scss" as *;
+@use "../../style-utills/mixins.scss" as *;
+
+.pagination {
+  margin-block: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+
+  &__button {
+    padding: 2px 7px;
+
+    &--disabled {
+      border-color: $shadow-second-color;
+      color: $shadow-second-color;
+
+      &:hover {
+        background-color: $base-color;
+        color: $shadow-second-color;
+      }
+    }
+  }
+}

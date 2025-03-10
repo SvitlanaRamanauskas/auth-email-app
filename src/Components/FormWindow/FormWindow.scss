@@ -1,5 +1,5 @@
-@use '../../style-utills/variables' as *;
-@use '../../style-utills/mixins' as *;
+@use "../../style-utills/variables" as *;
+@use "../../style-utills/mixins" as *;
 
 .form {
   position: relative;
@@ -16,25 +16,24 @@
   &__back {
     position: absolute;
     top: -15px;
-    color:$secondary;
-    cursor: pointer;
-    border: 1px solid $secondary;
-    border-radius: 4px;
     padding: 4px;
-    transition: background-color 0.3;
-
-    &:hover {
-      background-color: rgb(227, 224, 224);
-    }
+    margin-left: 10px;
   }
 
   &__window {
     gap: 16px;
-    margin: 24px; 
-    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 
-                0px 4px 6px -2px rgba(0, 0, 0, 0.05);
-    border-radius: 8px; 
+    margin: 24px;
+    box-shadow:
+      0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
     padding: 12px;
+  }
+
+  &__fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   &__title {
@@ -43,17 +42,18 @@
 
   &__label {
     display: block;
+    color: $shadow-second-color;
+    font-weight: 200;
+    text-transform: lowercase;
   }
 
   &__input {
     width: 100%;
     padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid $secondary;
-
-    &:focus {
-      outline: none;
-    }
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-radius: 0;
   }
 
   &__error {
@@ -63,28 +63,10 @@
   &__button {
     flex-grow: 1;
     height: 40px;
-    background-color: black;
-    color: white;
-    padding: 8px; 
-    cursor: pointer; 
+    padding: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.3s, color 0.3s;
-
-    &:hover {
-      background-color: #facc15; 
-      color: black;
-    }
-
-    &--reset {
-      border: 1px solid $secondary;
-      transition: background-color 0.3s, color 0.3s;
-
-      &:hover {
-        background-color: rgb(196, 194, 194); 
-      }
-    }
 
     &-wrapper {
       display: flex;

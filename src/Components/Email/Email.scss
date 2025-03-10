@@ -2,11 +2,8 @@
 @use "../../style-utills/mixins.scss" as *;
 
 .email {
+  padding: 10px;
 
-  @include on-tablet {
-    width: 60%;
-  }
-  
   &__form {
     display: flex;
     flex-direction: column;
@@ -14,9 +11,33 @@
   }
 
   &__input {
-    outline: none;
-    border: 1px solid black;
-    border-radius: 4px;
     padding: 7px;
+  }
+
+  &__button {
+    &-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &--reset {
+      background-color: $accent-color;
+      color: $base-color;
+      height: 30px;
+      line-height: 30px;
+      padding: 0;
+      width: 30%;
+      transition:
+        background-color 0.3s,
+        border-color 0.3s,
+        color 0.3s;
+
+      &:hover {
+        background-color: $base-color;
+        color: $accent-color;
+        border-color: $accent-color;
+      }
+    }
   }
 }

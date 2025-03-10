@@ -1,22 +1,28 @@
 import { EmailResponse } from "./types/Email";
+export const PAGE_SIZE = 4;
 
 const BASE_URL = "http://68.183.74.14:4005/api";
 
 const getAuthHeader = (): string => {
   const username = localStorage.getItem("username");
-  const password = localStorage.getItem("password"); 
+  const password = localStorage.getItem("password");
 
   if (!username || !password) {
     throw new Error("Missing authentication credentials");
   }
 
   return `Basic ${btoa(`${username}:${password}`)}`;
-}
+};
 
-const apiRequest = async (endpoint: string, method: string = "GET", body?: unknown, auth: boolean = false) => {
+const apiRequest = async (
+  endpoint: string,
+  method: string = "GET",
+  body?: unknown,
+  auth: boolean = false,
+) => {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-  }
+  };
 
   if (auth) {
     headers["Authorization"] = getAuthHeader();
@@ -30,13 +36,19 @@ const apiRequest = async (endpoint: string, method: string = "GET", body?: unkno
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+    throw new Error(
+      errorData.message || `Request failed with status ${response.status}`,
+    );
   }
 
   return response.json();
-}
+};
 
-export const createUser = async (userData: { username: string; email: string; password: string }) => {
+export const createUser = async (userData: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
   return apiRequest("/users/", "POST", userData);
 };
 
@@ -46,16 +58,25 @@ export const getCurrentUser = async (username: string, password: string) => {
   return apiRequest("/users/current/", "GET", undefined, true);
 };
 
-export const sendEmail = async (emailData: { sender: number; recipient: string; subject: string; message: string }) => {
+export const sendEmail = async (emailData: {
+  sender: number;
+  recipient: string;
+  subject: string;
+  message: string;
+}) => {
   return apiRequest("/emails/", "POST", emailData, true);
 };
 
-export const getEmails = async (userId: number, page: number): Promise<EmailResponse> => {
+export const getEmails = async (
+  userId: number,
+  page: number,
+): Promise<EmailResponse> => {
+  const offset = (page - 1) * PAGE_SIZE;
   const responseData: EmailResponse = await apiRequest(
-    `/emails/?userId=${userId}&page=${page}&page_size=4`,
+    `/emails/?offset=${offset}&limit=${PAGE_SIZE}&userId=${userId}`,
     "GET",
     undefined,
-    true
+    true,
   );
 
   return {

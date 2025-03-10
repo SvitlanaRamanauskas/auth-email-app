@@ -8,19 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../appContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// type FormDataLogin = {
-//   username: string;
-//   password: string;
-// };
-
-// type FormDataRegister = {
-//   username: string;
-//   email: string;
-//   password: string;
-// };
-
-// type FormData = FormDataLogin | FormDataRegister;
-
 const loginSchema = z.object({
   username: z
     .string()
@@ -28,7 +15,7 @@ const loginSchema = z.object({
     .max(150, "Username must be at most 150 characters.")
     .regex(
       /^[\w.@+-]+$/,
-      "Username can contain only letters, digits, and @/./+/-/_."
+      "Username can contain only letters, digits, and @/./+/-/_.",
     ),
 
   password: z
@@ -44,7 +31,7 @@ const registerSchema = z.object({
     .max(150, "Username must be at most 150 characters.")
     .regex(
       /^[\w.@+-]+$/,
-      "Username can contain only letters, digits, and @/./+/-/_."
+      "Username can contain only letters, digits, and @/./+/-/_.",
     ),
 
   email: z
@@ -141,12 +128,11 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
       </button>
 
       <form onSubmit={handleSubmit(onSubmit)} className="form__window">
-        <fieldset>
-          <h3 className="form__title">
+        <fieldset className="form__fieldset">
+          <h3 className="title form__title">
             {isRegistered ? "Log In" : "Register"}
           </h3>
 
-          {/* Username Input */}
           <div>
             <label className="form__label" htmlFor="username">
               Username
@@ -160,7 +146,6 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
                   id="username"
                   type="text"
                   className="form__input"
-                  placeholder="Username"
                 />
               )}
             />
@@ -169,7 +154,6 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
             )}
           </div>
 
-          {/* Email Input (Only for Registration) */}
           {!isRegistered && (
             <div>
               <label className="form__label" htmlFor="email">
@@ -184,15 +168,13 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
                     id="email"
                     type="email"
                     className="form__input"
-                    placeholder="Email"
                   />
                 )}
               />
-              {/* {errors.email && <p className="form__error">{errors.email.message}</p>} */}
+              {errors.email && <p className="form__error">{errors.email.message}</p>}
             </div>
           )}
 
-          {/* Password Input */}
           <div>
             <label className="form__label" htmlFor="password">
               Password
@@ -206,7 +188,6 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
                   id="password"
                   type="password"
                   className="form__input"
-                  placeholder="Password"
                 />
               )}
             />
@@ -217,11 +198,11 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
 
           {error && <p className="form__error">{error}</p>}
 
-          {/* Submit & Reset Buttons */}
           <div className="form__button-wrapper">
             <button className="form__button" type="submit" disabled={loading}>
               {loading ? <Loader /> : isRegistered ? "Log In" : "Register"}
             </button>
+
             <button
               className="form__button form__button--reset"
               type="reset"

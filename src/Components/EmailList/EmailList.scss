@@ -1,0 +1,41 @@
+@use "../../style-utills/variables.scss" as *;
+@use "../../style-utills/mixins.scss" as *;
+
+.list {
+  &__table {
+    width: 100%;
+    border-radius: 4px;
+    background-color: $base-color;
+
+    thead {
+      background-color: $accent-color;
+      color: $base-color;
+
+      tr {
+        th {
+          padding: 12px;
+          text-align: left;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: $shadow-color;
+        }
+
+        &:hover {
+          background-color: $hover-color;
+        }
+
+        td {
+          padding: 10px;
+          border-bottom: 1px solid $shadow-second-color;
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,10 @@
 import { EmailType } from "../../types/Email";
+import "./EmailList.scss";
 
 type Props = {
   emails: EmailType[];
-}
-export const EmailList: React.FC<Props>= ({ emails }) => {
-
+};
+export const EmailList: React.FC<Props> = ({ emails }) => {
   return (
     <article className="list">
       <table className="list__table">

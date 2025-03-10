@@ -1,4 +1,4 @@
-* [DEMO](https://svitlanaramanauskas.github.io/auth-email-app)
+- [DEMO](https://svitlanaramanauskas.github.io/auth-email-app)
 
 # Running the Project Locally
 
@@ -15,13 +15,13 @@ cd auth-email-app
 
 Install dependences using npm (Node Package Manager). Ensure you have Node.js installed on your machine. This project uses Node v20.
 
-```npm install react-router-dom```
+`npm install react-router-dom`
 
 - Run the Project:
 
 Start the development server with live reloading:
 
-```npm run dev```
+`npm run dev`
 
 Alternatively, you can use any other local server setup you prefer, such as Live Server for VS Code.
 

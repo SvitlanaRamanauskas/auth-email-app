@@ -1,8 +1,6 @@
 import { useState } from "react";
-import './Auth.scss';
+import "./Auth.scss";
 import { FormWindow } from "../FormWindow";
-
-
 
 export const Auth: React.FC = () => {
   const [isRegistered, setIsRegistered] = useState(false);
@@ -12,7 +10,7 @@ export const Auth: React.FC = () => {
     <>
       {!logOpen ? (
         <div className="auth">
-          <h1 className="auth__title">Welcome to our website!</h1>
+          <h1 className="title auth__title">Welcome to our website!</h1>
 
           <div className="auth__buttons">
             <button
@@ -22,7 +20,7 @@ export const Auth: React.FC = () => {
                 setLogOpen(true);
               }}
             >
-              Already have an account? Log In
+              Already have an account? <br /> <strong>Log In</strong>
             </button>
             <button
               className="auth__button"
@@ -31,16 +29,13 @@ export const Auth: React.FC = () => {
                 setLogOpen(true);
               }}
             >
-              Dont't have an account? Register
+              Don't have an account? <br /> <strong>Register</strong>
             </button>
           </div>
         </div>
       ) : (
         <div className="auth__form">
-         <FormWindow
-          isRegistered={isRegistered}
-          onLogOpen={setLogOpen}
-         />
+          <FormWindow isRegistered={isRegistered} onLogOpen={setLogOpen} />
         </div>
       )}
     </>

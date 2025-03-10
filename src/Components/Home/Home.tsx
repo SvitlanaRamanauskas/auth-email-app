@@ -7,8 +7,7 @@ import { Loader } from "../Loader";
 import { Email } from "../Email";
 import { EmailList } from "../EmailList";
 import { EmailType } from "../../types/Email";
-
-const PAGE_SIZE = 4;
+import { Pagination } from "../Pagination";
 
 export const Home: React.FC = () => {
   const [errorLoadingCurrentUser, setErrorLoadingCurrentUser] = useState(false);
@@ -22,6 +21,8 @@ export const Home: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingEmails, setLoadingEmails] = useState(false);
   const [errorEmails, setErrorEmails] = useState<string | null>(null);
+
+  console.log(next);
 
   const { setIsAuthenticated, currentUser, setCurrentUser } =
     useContext(AppContext);
@@ -79,24 +80,30 @@ export const Home: React.FC = () => {
   }, [currentPage, currentUser]);
 
   const handleNextPage = () => {
-    if (next) {
-      setCurrentPage((prev) => prev + 1);
+    if (next && currentUser) {
+      setCurrentPage((prev) => {
+        const newPage = prev + 1;
+        fetchEmails(currentUser.id, newPage);
+        return newPage;
+      });
     }
   };
 
   const handlePreviousPage = () => {
-    if (previous) {
-      setCurrentPage((prev) => prev - 1);
+    if (previous && currentUser) {
+      setCurrentPage((prev) => {
+        const newPage = prev - 1;
+        fetchEmails(currentUser.id, newPage);
+        return newPage;
+      });
     }
   };
-
-  const totalPages = Math.ceil(count / PAGE_SIZE);
 
   return (
     <div className="home">
       <section className="home__section home__section--top">
-        <div className="home__name">
-          <h1 className="home__title">{`User: ${currentUser?.username}`}</h1>
+        <div className="title home__name">
+          <h2 className="home__title">{`User: ${currentUser?.username}`}</h2>
           <p className="home__mail">{`Email address: ${currentUser?.email}`}</p>
         </div>
         <div className="home__button-container">
@@ -106,6 +113,7 @@ export const Home: React.FC = () => {
           >
             Log out
           </button>
+          
           <button
             onClick={toggleLetterOpen}
             className="home__button home__button--logout"
@@ -120,37 +128,31 @@ export const Home: React.FC = () => {
       )}
       {!errorLoadingCurrentUser && loadingCurrentUser && <Loader />}
 
-      
-        <section className="home__section home__section--bottom">
-          
-        {letterOpen && (
-          <Email currentUser={currentUser} />
-        )}
-          {!loadingEmails 
-          && !errorEmails 
-          && emailsFromServer.length > 0 
-          && <EmailList emails={emailsFromServer} />}
-          
-          {loadingEmails && !errorEmails && <Loader />}
+      <section className="home__section home__section--bottom">
+        {letterOpen && <Email currentUser={currentUser} />}
 
+        <article className="home__list">
+          {!loadingEmails && !errorEmails && emailsFromServer.length > 0 && (
+            <EmailList emails={emailsFromServer} />
+          )}
+
+          {loadingEmails && !errorEmails && <Loader />}
           {errorEmails && !loadingEmails && <p>Error getting emails</p>}
 
           {!loadingEmails && !errorEmails && emailsFromServer.length === 0 && (
             <p>No emails yet</p>
           )}
 
-          <div className="pagination">
-            <button onClick={handlePreviousPage} disabled={!previous}>
-              Prev
-            </button>
-            <span>
-              {currentPage} of {totalPages}
-            </span>
-            <button onClick={handleNextPage} disabled={!next}>
-              Next
-            </button>
-          </div>
-        </section>
+          <Pagination
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
+            previous={previous}
+            next={next}
+            count={count}
+            currentPage={currentPage}
+          />
+        </article>
+      </section>
     </div>
   );
 };
