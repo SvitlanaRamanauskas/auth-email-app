@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./Home.scss";
 import { AppContext } from "../appContext";
 import { useContext, useEffect, useState } from "react";
-import { getCurrentUser, getEmails } from "../../api";
+import { getEmails } from "../../api";
 import { Loader } from "../Loader";
 import { Email } from "../Email";
 import { EmailList } from "../EmailList";
@@ -10,8 +10,8 @@ import { EmailType } from "../../types/Email";
 import { Pagination } from "../Pagination";
 
 export const Home: React.FC = () => {
-  const [errorLoadingCurrentUser, setErrorLoadingCurrentUser] = useState(false);
-  const [loadingCurrentUser, setLoadingCurrentUser] = useState(false);
+  // const [errorLoadingCurrentUser, setErrorLoadingCurrentUser] = useState(false);
+  // const [loadingCurrentUser, setLoadingCurrentUser] = useState(false);
   const [letterOpen, setLetterOpen] = useState(false);
 
   const [emailsFromServer, setEmailsFromServer] = useState<EmailType[]>([]);
@@ -24,7 +24,7 @@ export const Home: React.FC = () => {
 
   console.log("in home comp")
 
-  const { setIsAuthenticated, currentUser, setCurrentUser } =
+  const { setIsAuthenticated, currentUser } =
     useContext(AppContext);
   const navigate = useNavigate();
   const localUsername = localStorage.getItem("username");
@@ -43,23 +43,6 @@ export const Home: React.FC = () => {
   const toggleLetterOpen = () => {
     setLetterOpen((prev) => !prev);
   };
-
-  useEffect(() => {
-    if (!localUsername || !localPassword || currentUser) return;
-  
-    setLoadingCurrentUser(true);
-    setErrorLoadingCurrentUser(false);
-
-    getCurrentUser(localUsername, localPassword)
-      .then((data) => {
-        console.log(data)
-        setCurrentUser(data)
-      })
-      .catch(() => setErrorLoadingCurrentUser(true))
-      .finally(() => setLoadingCurrentUser(false));
-
-      console.log("currentuser",currentUser)
-  }, []);
 
   const fetchEmails = async (userId: number, page: number) => {
     if (!userId) return;
@@ -127,10 +110,10 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {errorLoadingCurrentUser && !loadingCurrentUser && (
+      {/* {errorLoadingCurrentUser && !loadingCurrentUser && (
         <p className="home__message">Error loading current user</p>
       )}
-      {!errorLoadingCurrentUser && loadingCurrentUser && <Loader />}
+      {!errorLoadingCurrentUser && loadingCurrentUser && <Loader />} */}
 
       <section className="home__section home__section--bottom">
         {letterOpen && <Email currentUser={currentUser} />}
