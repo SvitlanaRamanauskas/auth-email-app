@@ -1,5 +1,3 @@
-- [DEMO](https://svitlanaramanauskas.github.io/auth-email-app)
-
 # Running the Project Locally
 
 To run this project locally, follow these steps:
