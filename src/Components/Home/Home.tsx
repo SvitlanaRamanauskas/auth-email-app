@@ -45,11 +45,8 @@ export const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!localUsername || !localPassword) {
-      setErrorLoadingCurrentUser(true);
-      return;
-    }
-
+    if (!localUsername || !localPassword || currentUser) return;
+  
     setLoadingCurrentUser(true);
     setErrorLoadingCurrentUser(false);
 
@@ -105,7 +102,7 @@ export const Home: React.FC = () => {
       });
     }
   };
-  console.log("in home end")
+  console.log("in home end", currentUser, localUsername, localPassword)
   return (
     <div className="home">
       <section className="home__section home__section--top">
@@ -154,7 +151,7 @@ export const Home: React.FC = () => {
           )}
 
           {loadingEmails && !errorEmails && <Loader />}
-          {!errorEmails && !loadingEmails && <p className="home__message">Error getting emails</p>}
+          {errorEmails && !loadingEmails && <p className="home__message">Error getting emails</p>}
 
           {loadingEmails && !errorEmails && emailsFromServer.length === 0 && (
             <p className="home__message">No emails yet</p>

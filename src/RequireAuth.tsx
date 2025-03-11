@@ -6,16 +6,12 @@ export const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
   console.log("isAuth", isAuthenticated);
 
+  const localUsername = localStorage.getItem("username");
+  const localPassword = localStorage.getItem('password');
+  
   useEffect(() => {
-    const localUsername = localStorage.getItem('username');
-    const localPassword = localStorage.getItem('password');
-
-    if (localUsername && localPassword) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, [setIsAuthenticated]);
+    setIsAuthenticated(!!localUsername && !!localPassword);
+  }, [setIsAuthenticated, localUsername, localPassword]);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

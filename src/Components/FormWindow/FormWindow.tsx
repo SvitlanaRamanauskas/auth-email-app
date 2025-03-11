@@ -84,8 +84,7 @@ export const FormWindow: React.FC<Props> = ({
   const onSubmitRegistration = async (data: FormDataRegister) => {
     localStorage.removeItem("username");
     localStorage.removeItem("password");
-    localStorage.removeItem("email");
-    localStorage.removeItem("userId");
+    
     setLoading(true);
     setError("");
 
@@ -93,13 +92,8 @@ export const FormWindow: React.FC<Props> = ({
       const response = await createUser(data);
 
       if (response && response.id) {
-        localStorage.setItem("username", response.username);
-        localStorage.setItem("email", response.email);
-        localStorage.setItem("userId", response.id.toString());
+        await onSubmitLogin({ username: data.username, password: data.password });
       }
-      window.alert("Please, now log in with your credentials");
-
-      onLogOpen(true);
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "data" in err) {
         const errorData = err as { data: { username?: string[] } };
@@ -117,7 +111,6 @@ export const FormWindow: React.FC<Props> = ({
   };
 
   const onSubmitLogin = async (data: FormDataLogin) => {
-    localStorage.removeItem("email");
     localStorage.removeItem("username");
     localStorage.removeItem("password");
     setLoading(true);
@@ -132,7 +125,6 @@ export const FormWindow: React.FC<Props> = ({
         localStorage.setItem("password", data.password);
 
         setIsAuthenticated(true);
-        
         navigate("/");
       }
 

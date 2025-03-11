@@ -1,9 +1,9 @@
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from "./App";
-import { HomePage } from "./Pages/HomePage";
 import { RequireAuth } from "./RequireAuth";
-import { LoginPage } from "./Pages/LoginPage";
 import { AppProvider } from "./Components/appContext";
+import { Home } from "./Components/Home";
+import { Auth } from "./Components/Auth";
 
 export const Root = () => {
   return (
@@ -15,11 +15,11 @@ export const Root = () => {
               path="/"
               element={
                 <RequireAuth>
-                  <HomePage />
+                  <Home />
                 </RequireAuth>
               }
             />
-            <Route path="login" element={<LoginPage />} />
+            <Route path="/login" element={<Auth />} />
           </Route>
         </Routes>
       </Router>
