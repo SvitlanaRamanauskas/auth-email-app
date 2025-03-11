@@ -53,10 +53,7 @@ type Props = {
   onLogOpen: (value: boolean) => void;
 };
 
-export const FormWindow: React.FC<Props> = ({
-  isRegistered,
-  onLogOpen,
-}) => {
+export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -66,14 +63,15 @@ export const FormWindow: React.FC<Props> = ({
     return isRegistered ? loginSchema : registerSchema;
   };
 
-
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<FormDataRegister | FormDataLogin>({
-    resolver: zodResolver(getValidationSchema(isRegistered)) as Resolver<FormDataRegister | FormDataLogin>,
+    resolver: zodResolver(getValidationSchema(isRegistered)) as Resolver<
+      FormDataRegister | FormDataLogin
+    >,
     defaultValues: { username: "", email: "", password: "" },
   });
 
@@ -84,7 +82,7 @@ export const FormWindow: React.FC<Props> = ({
   const onSubmitRegistration = async (data: FormDataRegister) => {
     localStorage.removeItem("username");
     localStorage.removeItem("password");
-    
+
     setLoading(true);
     setError("");
 
@@ -92,7 +90,12 @@ export const FormWindow: React.FC<Props> = ({
       const response = await createUser(data);
 
       if (response && response.id) {
-        await onSubmitLogin({ username: data.username, password: data.password });
+        await onSubmitLogin({
+          username: data.username,
+          password: data.password,
+        });
+        setIsAuthenticated(true);
+        navigate("/");
       }
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "data" in err) {
@@ -119,19 +122,15 @@ export const FormWindow: React.FC<Props> = ({
     try {
       const response = await getCurrentUser(data.username, data.password);
       setCurrentUser(response);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("password", data.password);
 
-      if (response && response.success) {
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("password", data.password);
-
-        setIsAuthenticated(true);
-        navigate("/");
-      }
-
+      setIsAuthenticated(true);
+      navigate("/");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "status" in err) {
         const error = err as { status: number; data?: { username?: string[] } };
-  
+
         if (error.status === 401) {
           setError("Unauthorized: No user with such credentials.");
           return;
@@ -155,7 +154,6 @@ export const FormWindow: React.FC<Props> = ({
     setError("");
     reset();
   };
-
 
   return (
     <div className="form">
@@ -207,7 +205,9 @@ export const FormWindow: React.FC<Props> = ({
                   />
                 )}
               />
-              {("email" in errors) && errors.email && <p className="form__error">{errors.email.message}</p>}
+              {"email" in errors && errors.email && (
+                <p className="form__error">{errors.email.message}</p>
+              )}
             </div>
           )}
 

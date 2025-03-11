@@ -6,6 +6,10 @@ export type ContextType = {
   setIsAuthenticated: (value: boolean) => void;
   currentUser: CurrentUser | null;
   setCurrentUser: (value: CurrentUser | null) => void;
+  errorLoadingCurrentUser: boolean;
+  setErrorLoadingCurrentUser: (value: boolean) => void;
+  loadingCurrentUser: boolean;
+  setLoadingCurrentUser: (value: boolean) => void;
 };
 
 type Props = {
@@ -17,11 +21,17 @@ export const AppContext = React.createContext<ContextType>({
   setIsAuthenticated: () => {},
   currentUser: null,
   setCurrentUser: () => {},
+  errorLoadingCurrentUser: false,
+  setErrorLoadingCurrentUser:  () => {},
+  loadingCurrentUser: false,
+  setLoadingCurrentUser: () => {},
 });
 
 export const AppProvider: React.FC<Props> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [errorLoadingCurrentUser, setErrorLoadingCurrentUser] = useState(false);
+  const [loadingCurrentUser, setLoadingCurrentUser] = useState(false);
 
   const values = useMemo(
     () => ({
@@ -29,6 +39,10 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
       setIsAuthenticated,
       currentUser,
       setCurrentUser,
+      errorLoadingCurrentUser,
+      setErrorLoadingCurrentUser,
+      loadingCurrentUser,
+      setLoadingCurrentUser
     }),
     [isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser],
   );

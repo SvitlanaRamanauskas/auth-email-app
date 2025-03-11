@@ -4,8 +4,8 @@ import { Navigate } from "react-router-dom";
 import { getCurrentUser } from "./api";
 
 export const RequireAuth = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, setIsAuthenticated, setCurrentUser, currentUser } = useContext(AppContext);
-  console.log("isAuth", isAuthenticated);
+  const { isAuthenticated, setIsAuthenticated, setCurrentUser, currentUser, setErrorLoadingCurrentUser, setLoadingCurrentUser } = useContext(AppContext);
+  console.log("isAuth 1", isAuthenticated);
 
   const localUsername = localStorage.getItem("username");
   const localPassword = localStorage.getItem('password');
@@ -18,18 +18,18 @@ export const RequireAuth = ({ children }: { children: React.ReactNode }) => {
         setCurrentUser(data)
         setIsAuthenticated(true);
       })
-      // .catch(() => setErrorLoadingCurrentUser(true))
-      // .finally(() => setLoadingCurrentUser(false));
+      .catch(() => setErrorLoadingCurrentUser(true))
+      .finally(() => setLoadingCurrentUser(false));
     }
   
-      console.log("auth-currentUser", currentUser, "auth-authed", isAuthenticated)
+      console.log("auth-currentUser 2", currentUser, "auth-authed 2", isAuthenticated)
   }, [localUsername, localPassword, setCurrentUser, setIsAuthenticated]);
 
   useEffect(() => {
-    console.log("auth-currentUser:", currentUser, "auth-authed:", isAuthenticated);
+    console.log("auth-currentUser 3:", currentUser, "auth-authed 3:", isAuthenticated);
   }, [currentUser, isAuthenticated]);
 
-  if (!isAuthenticated) {
+  if (!localUsername) {
     return <Navigate to="/login" replace />;
   }
 

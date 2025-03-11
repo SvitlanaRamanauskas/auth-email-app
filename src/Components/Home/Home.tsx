@@ -10,8 +10,6 @@ import { EmailType } from "../../types/Email";
 import { Pagination } from "../Pagination";
 
 export const Home: React.FC = () => {
-  // const [errorLoadingCurrentUser, setErrorLoadingCurrentUser] = useState(false);
-  // const [loadingCurrentUser, setLoadingCurrentUser] = useState(false);
   const [letterOpen, setLetterOpen] = useState(false);
 
   const [emailsFromServer, setEmailsFromServer] = useState<EmailType[]>([]);
@@ -24,7 +22,7 @@ export const Home: React.FC = () => {
 
   console.log("in home comp")
 
-  const { setIsAuthenticated, currentUser } =
+  const { setIsAuthenticated, currentUser, loadingCurrentUser, errorLoadingCurrentUser } =
     useContext(AppContext);
   const navigate = useNavigate();
   const localUsername = localStorage.getItem("username");
@@ -110,10 +108,10 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* {errorLoadingCurrentUser && !loadingCurrentUser && (
+      {errorLoadingCurrentUser && !loadingCurrentUser && (
         <p className="home__message">Error loading current user</p>
       )}
-      {!errorLoadingCurrentUser && loadingCurrentUser && <Loader />} */}
+      {!errorLoadingCurrentUser && loadingCurrentUser && <Loader />}
 
       <section className="home__section home__section--bottom">
         {letterOpen && <Email currentUser={currentUser} />}
