@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import "./FormWindow.scss";
 import { z } from "zod";
 import { Loader } from "../Loader/Loader";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, Resolver, useForm } from "react-hook-form";
 import { createUser, getCurrentUser } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../appContext";
@@ -60,7 +60,12 @@ export const FormWindow: React.FC<Props> = ({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useContext(AppContext);
+  const { setIsAuthenticated, setCurrentUser } = useContext(AppContext);
+
+  const getValidationSchema = (isRegistered: boolean) => {
+    return isRegistered ? loginSchema : registerSchema;
+  };
+
 
   const {
     control,
@@ -68,7 +73,7 @@ export const FormWindow: React.FC<Props> = ({
     formState: { errors },
     reset,
   } = useForm<FormDataRegister | FormDataLogin>({
-    resolver: zodResolver(isRegistered ? loginSchema : registerSchema),
+    resolver: zodResolver(getValidationSchema(isRegistered)) as Resolver<FormDataRegister | FormDataLogin>,
     defaultValues: { username: "", email: "", password: "" },
   });
 
@@ -120,6 +125,7 @@ export const FormWindow: React.FC<Props> = ({
 
     try {
       const response = await getCurrentUser(data.username, data.password);
+      setCurrentUser(response);
 
       if (response && response.success) {
         localStorage.setItem("username", data.username);
@@ -157,6 +163,7 @@ export const FormWindow: React.FC<Props> = ({
     setError("");
     reset();
   };
+
 
   return (
     <div className="form">
@@ -208,7 +215,7 @@ export const FormWindow: React.FC<Props> = ({
                   />
                 )}
               />
-              {/* {errors.email && <p className="form__error">{errors.email.message}</p>} */}
+              {("email" in errors) && errors.email && <p className="form__error">{errors.email.message}</p>}
             </div>
           )}
 
