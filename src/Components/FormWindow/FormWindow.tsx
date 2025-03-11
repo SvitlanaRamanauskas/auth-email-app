@@ -57,7 +57,7 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated, setCurrentUser } = useContext(AppContext);
+  const { setCurrentUser } = useContext(AppContext);
 
   const getValidationSchema = (isRegistered: boolean) => {
     return isRegistered ? loginSchema : registerSchema;
@@ -94,7 +94,6 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
           username: data.username,
           password: data.password,
         });
-        setIsAuthenticated(true);
         navigate("/");
       }
     } catch (err: unknown) {
@@ -125,7 +124,6 @@ export const FormWindow: React.FC<Props> = ({ isRegistered, onLogOpen }) => {
       localStorage.setItem("username", data.username);
       localStorage.setItem("password", data.password);
 
-      setIsAuthenticated(true);
       navigate("/");
     } catch (err: unknown) {
       if (typeof err === "object" && err !== null && "status" in err) {

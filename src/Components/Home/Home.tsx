@@ -20,21 +20,14 @@ export const Home: React.FC = () => {
   const [loadingEmails, setLoadingEmails] = useState(false);
   const [errorEmails, setErrorEmails] = useState<string | null>(null);
 
-  console.log("in home comp")
-
-  const { setIsAuthenticated, currentUser, loadingCurrentUser, errorLoadingCurrentUser } =
+  const { currentUser, loadingCurrentUser, errorLoadingCurrentUser } =
     useContext(AppContext);
   const navigate = useNavigate();
-  const localUsername = localStorage.getItem("username");
-  const localPassword = localStorage.getItem("password");
-
-  console.log(localUsername, localPassword)
 
   const handleLogout = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("password");
     localStorage.removeItem("userId");
-    setIsAuthenticated(false);
     navigate("/login");
   };
 
@@ -83,7 +76,7 @@ export const Home: React.FC = () => {
       });
     }
   };
-  console.log("in home end", currentUser, localUsername, localPassword)
+
   return (
     <div className="home">
       <section className="home__section home__section--top">
@@ -134,7 +127,7 @@ export const Home: React.FC = () => {
           {loadingEmails && !errorEmails && <Loader />}
           {errorEmails && !loadingEmails && <p className="home__message">Error getting emails</p>}
 
-          {loadingEmails && !errorEmails && emailsFromServer.length === 0 && (
+          {!loadingEmails && !errorEmails && emailsFromServer.length === 0 && (
             <p className="home__message">No emails yet</p>
           )}
         </article>
